@@ -133,12 +133,16 @@ new function() {
 		// Get the path data, and determine whether it is a compound path or a
 		// normal path based on the amount of moveTo commands inside it.
 		var data = node.getAttribute('d'),
-			param = { pathData: data };
-		// If there are multiple moveTo commands or a closePath command followed
-		// by other commands, we have a CompoundPath:
-		return data.match(/m/gi).length > 1 || /z\S+/i.test(data)
-				? new CompoundPath(param)
-				: new Path(param);
+			param = { pathData: data },
+			match = data.match(/m/gi);
+
+			if (match !== null) {
+				// If there are multiple moveTo commands or a closePath command followed
+				// by other commands, we have a CompoundPath:
+				return data.match(/m/gi).length > 1 || /z\S+/i.test(data)
+						? new CompoundPath(param)
+						: new Path(param);
+			}
 	}
 
 	function importGradient(node, type) {

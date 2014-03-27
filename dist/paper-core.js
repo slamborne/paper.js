@@ -9,7 +9,7 @@
  *
  * All rights reserved.
  *
- * Date: Thu Mar 20 17:20:10 2014 +0100
+ * Date: Wed Mar 26 16:58:43 2014 +0100
  *
  ***
  *
@@ -8523,7 +8523,6 @@ Path.inject({
 		if (!this.contains(point)) {
 			var curves = this._getMonoCurves(),
 				roots = [],
-				x = point.x,
 				y = point.y,
 				xIntercepts = [];
 			for (var i = 0, l = curves.length; i < l; i++) {
@@ -9840,7 +9839,7 @@ var Style = Base.extend(new function() {
 	getFontStyle: function() {
 		var fontSize = this.getFontSize();
 		return this.getFontWeight()
-				+ ' ' + fontSize + (/\w/i.test(fontSize + '') ? ' ' : 'px ')
+				+ ' ' + fontSize + (/\[a-z]/i.test(fontSize + '') ? ' ' : 'px ')
 				+ this.getFontFamily();
 	},
 
@@ -12012,10 +12011,14 @@ new function() {
 
 	function importPath(node) {
 		var data = node.getAttribute('d'),
-			param = { pathData: data };
-		return data.match(/m/gi).length > 1 || /z\S+/i.test(data)
-				? new CompoundPath(param)
-				: new Path(param);
+			param = { pathData: data },
+			match = data.match(/m/gi);
+
+			if (match !== null) {
+				return data.match(/m/gi).length > 1 || /z\S+/i.test(data)
+						? new CompoundPath(param)
+						: new Path(param);
+			}
 	}
 
 	function importGradient(node, type) {
